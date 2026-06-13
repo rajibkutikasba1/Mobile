@@ -2,72 +2,81 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>প্রো সার্ভিসিং ইনভেন্টরি</title>
+    <title>মোবাইল কেয়ার কুটি বাজার</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #eef2f3; padding: 20px; }
-        .card { max-width: 500px; background: white; margin: auto; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
-        button:hover { background: #219150; }
+        body { font-family: 'SolaimanLipi', sans-serif; background: #eee; padding: 20px; }
+        .invoice { max-width: 500px; background: white; margin: auto; padding: 25px; border: 2px solid #333; }
+        h2 { text-align: center; color: #d35400; margin-bottom: 5px; }
+        .shop-info { text-align: center; font-size: 14px; margin-bottom: 20px; }
+        .field { margin: 10px 0; }
+        label { font-weight: bold; display: block; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #999; box-sizing: border-box; }
+        .footer { margin-top: 25px; font-size: 12px; border-top: 1px dashed #333; padding-top: 10px; }
+        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>মোবাইল সার্ভিসিং ড্যাশবোর্ড</h2>
-    
-    <div class="form-group">
-        <label>IMEI স্ক্যান করুন</label>
-        <input type="text" id="imei" placeholder="স্ক্যানার দিয়ে স্ক্যান করুন..." onchange="loadMobileData()">
+<div class="invoice">
+    <h2>মোবাইল কেয়ার</h2>
+    <div class="shop-info">কুটি বাজার<br>তারিখ: <span id="date"></span></div>
+
+    <div class="no-print">
+        <label>IMEI স্ক্যান করুন:</label>
+        <input type="text" id="imei" onchange="autoFill()" placeholder="এখানে স্ক্যান করুন...">
     </div>
 
-    <div class="form-group">
-        <label>মোবাইল মডেল</label>
-        <input type="text" id="model" readonly placeholder="IMEI দিলে মডেল আসবে...">
+    <div class="field">
+        <label>মডেল:</label>
+        <input type="text" id="model">
     </div>
-
-    <div class="form-group">
-        <label>সমস্যার ধরন</label>
+    <div class="field">
+        <label>সমস্যা:</label>
         <select id="problem">
-            <option value="">-- সমস্যা নির্বাচন করুন --</option>
-            <option value="Display">ডিসপ্লে/টাচ সমস্যা</option>
-            <option value="Charging">চার্জিং পোর্ট</option>
-            <option value="Battery">ব্যাটারি পরিবর্তন</option>
-            <option value="Network">নেটওয়ার্ক ইস্যু</option>
-            <option value="Dead">ফোন অন হয় না (Dead)</option>
-            <option value="Software">সফটওয়্যার/লক</option>
-            <option value="Camera">ক্যামেরা সমস্যা</option>
+            <option>ডিসপ্লে সমস্যা</option>
+            <option>চার্জিং পোর্ট সমস্যা</option>
+            <option>ব্যাটারি পরিবর্তন</option>
+            <option>নেটওয়ার্ক সমস্যা</option>
+            <option>সফটওয়্যার/হ্যাং</option>
+            <option>অন্যান্য</option>
         </select>
     </div>
-
-    <div class="form-group">
-        <label>কাস্টমারের নাম ও মোবাইল</label>
-        <input type="text" id="cName" placeholder="নাম">
-        <input type="text" id="cPhone" placeholder="ফোন নাম্বার">
+    <div class="field">
+        <label>কাস্টমারের নাম:</label>
+        <input type="text" id="cName">
+    </div>
+    <div class="field">
+        <label>মোবাইল নাম্বার:</label>
+        <input type="text" id="cPhone">
+    </div>
+    <div class="field">
+        <label>ঠিকানা:</label>
+        <input type="text" id="cAddress">
+    </div>
+    <div class="field">
+        <label>রিপেয়ার খরচ (টাকা):</label>
+        <input type="number" id="price">
     </div>
 
-    <button onclick="window.print()">রিপোর্ট প্রিন্ট করুন</button>
+    <div class="footer">
+        <p><b>শর্তাবলি:</b> ১. ওয়ারেন্টি মেয়াদ ৭ দিন। ২. পানি লাগলে বা হাত থেকে পড়ে গেলে ওয়ারেন্টি কার্যকর নয়। ৩. রিসিট ছাড়া ফোন ডেলিভারি দেওয়া হবে না।</p>
+    </div>
+
+    <button class="no-print" onclick="window.print()">রিসিট প্রিন্ট করুন</button>
 </div>
 
 <script>
-    // এখানে আপনার দোকানের স্টক ডাটাবেস রাখুন
-    const stock = {
-        "123456789": "iPhone 15 Pro",
-        "987654321": "Samsung S24 Ultra",
-        "555666777": "Redmi Note 13"
-    };
+    document.getElementById('date').innerText = new Date().toLocaleDateString('bn-BD');
 
-    function loadMobileData() {
+    function autoFill() {
+        // এখানে আপনার ফোনের মডেল যোগ করা আছে
+        const phones = { "12345": "Samsung M12", "67890": "Vivo Y20", "11122": "Oppo A15" };
         let imei = document.getElementById('imei').value;
-        let modelField = document.getElementById('model');
-        
-        if(stock[imei]) {
-            modelField.value = stock[imei];
+        if(phones[imei]) {
+            document.getElementById('model').value = phones[imei];
         } else {
-            modelField.value = "মডেল খুঁজে পাওয়া যায়নি!";
+            alert("মডেল পাওয়া যায়নি, নিজে লিখুন।");
         }
     }
 </script>
