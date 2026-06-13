@@ -2,68 +2,111 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>মোবাইল কেয়ার কুটি বাজার</title>
+    <title>মোবাইল কেয়ার - ইনভেন্টরি ড্যাশবোর্ড</title>
+    <link href="https://fonts.googleapis.com/css2?family=SolaimanLipi&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
-        body { font-family: 'SolaimanLipi', sans-serif; background: #eee; padding: 20px; }
-        .invoice { max-width: 500px; background: white; margin: auto; padding: 25px; border: 2px solid #333; }
-        h2 { text-align: center; color: #d35400; margin-bottom: 5px; }
-        .shop-info { text-align: center; font-size: 14px; margin-bottom: 20px; }
-        .field { margin: 10px 0; }
-        label { font-weight: bold; display: block; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #999; box-sizing: border-box; }
-        .barcode-area { text-align: center; margin-top: 20px; }
-        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        body { font-family: 'SolaimanLipi', sans-serif; background: #eef2f5; padding: 20px; }
+        .dashboard { max-width: 500px; background: white; margin: auto; padding: 30px; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border: 2px solid #333; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #d35400; padding-bottom: 15px; }
+        .header i { font-size: 50px; color: #d35400; display: block; margin-bottom: 10px; }
+        .header h1 { font-size: 26px; font-weight: bold; color: #333; margin: 0; }
+        .shop-loc { font-size: 14px; color: #777; margin-top: 5px; }
+        .date-time { text-align: center; font-size: 12px; color: #555; margin-bottom: 20px; border-top: 1px solid #eee; padding-top: 10px; }
+        .field { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
+        label i { margin-right: 5px; color: #d35400; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .barcode-area { text-align: center; margin: 20px 0; border: 1px dashed #bbb; padding: 10px; }
+        .btn-group { display: flex; gap: 15px; margin-top: 25px; }
+        button { flex: 1; padding: 15px; border: none; cursor: pointer; color: white; font-size: 16px; border-radius: 10px; font-weight: bold; }
+        .print-btn { background: #27ae60; }
+        .print-btn:hover { background: #219150; }
+        .search-btn { background: #2980b9; }
+        .search-btn:hover { background: #2471a3; }
         @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
 
-<div class="invoice">
-    <h2>মোবাইল কেয়ার</h2>
-    <div class="shop-info">কুটি বাজার<br>তারিখ: <span id="date"></span></div>
-
-    <div class="no-print">
-        <label>IMEI স্ক্যান করুন:</label>
-        <input type="text" id="imei" onchange="generateBarcode()" placeholder="এখানে স্ক্যান করুন...">
-    </div>
-
-    <div class="field">
-        <label>মডেল:</label>
-        <input type="text" id="model">
+<div class="dashboard">
+    <div class="header">
+        <i class="fas fa-mobile-alt"></i> <h1>মোবাইল কেয়ার</h1>
+        <div class="shop-loc">কুটি বাজার, কসবা</div>
     </div>
     
+    <div class="date-time no-print">
+        <i class="far fa-calendar-alt"></i> তারিখ: <span id="date"></span> | <i class="far fa-clock"></i> সময়: <span id="time"></span>
+    </div>
+
+    <div class="no-print field">
+        <label><i class="fas fa-barcode"></i> IMEI স্ক্যান করুন:</label>
+        <input type="text" id="imei" onchange="autoFill()" placeholder="স্ক্যানার দিয়ে স্ক্যান করুন...">
+    </div>
+
+    <div class="field">
+        <label><i class="fas fa-mobile"></i> মোবাইল মডেল:</label>
+        <input type="text" id="model" placeholder="মডেল অটোমেটিক আসবে...">
+    </div>
+
+    <div class="field">
+        <label><i class="fas fa-tools"></i> সমস্যা (তুমি দিয়ে দাও):</label>
+        <input type="text" id="problem" placeholder="আমি কি এটিও অটোমেটিক করে দেব?">
+    </div>
+
+    <div class="field">
+        <label><i class="fas fa-user"></i> কাস্টমারের নাম:</label>
+        <input type="text" id="cName" placeholder="নাম লিখুন...">
+    </div>
+
+    <div class="field">
+        <label><i class="fas fa-phone-alt"></i> মোবাইল নাম্বার:</label>
+        <input type="text" id="cPhone" placeholder="নাম্বার লিখুন...">
+    </div>
+
+    <div class="field">
+        <label><i class="fas fa-address-book"></i> ঠিকানা:</label>
+        <input type="text" id="cAddress" placeholder="ঠিকানা লিখুন...">
+    </div>
+
+    <div class="field">
+        <label><i class="fas fa-money-bill-wave"></i> টাকা:</label>
+        <input type="number" id="price" placeholder="রিপেয়ার খরচ...">
+    </div>
+
     <div class="barcode-area">
         <svg id="barcode"></svg>
+        <div style="font-size: 10px; color: #555; margin-top: 5px;">গিটহাব: rajibkutikasba1/Mobile</div>
     </div>
 
-    <div class="field">
-        <label>কাস্টমারের নাম:</label>
-        <input type="text" id="cName">
+    <div class="btn-group no-print">
+        <button class="search-btn" onclick="searchCustomer()"><i class="fas fa-search"></i> কাস্টমার খুঁজুন</button>
+        <button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> রিসিট প্রিন্ট করুন</button>
     </div>
-    <div class="field">
-        <label>মোবাইল নাম্বার:</label>
-        <input type="text" id="cPhone">
-    </div>
-    <div class="field">
-        <label>রিপেয়ার খরচ:</label>
-        <input type="number" id="price">
-    </div>
-
-    <button class="no-print" onclick="window.print()">রিসিট প্রিন্ট করুন</button>
 </div>
 
 <script>
     document.getElementById('date').innerText = new Date().toLocaleDateString('bn-BD');
+    document.getElementById('time').innerText = new Date().toLocaleTimeString('bn-BD');
 
-    function generateBarcode() {
+    function autoFill() {
         let imei = document.getElementById('imei').value;
-        // অটো মডেল লোড
-        const phones = { "12345": "Samsung M12", "67890": "Vivo Y20" };
+        // আপনার ডাটাবেস: এখানে আমি কিছু মডেল দিয়েছি, আপনি চাইলে এগুলো বাড়িয়ে নিন।
+        const phones = { "12345": "Samsung M12", "67890": "Vivo Y20", "11122": "Oppo A15", "33344": "Xiaomi Note 11" };
         if(phones[imei]) document.getElementById('model').value = phones[imei];
         
         // বারকোড জেনারেট
-        JsBarcode("#barcode", imei, { format: "CODE128", width: 2, height: 40, displayValue: true });
+        JsBarcode("#barcode", imei, { format: "CODE128", width: 2, height: 40 });
+    }
+
+    function searchCustomer() {
+        let name = document.getElementById('cName').value;
+        if(name) {
+            alert(name + " নাম দিয়ে ডাটাবেসে খোঁজা হচ্ছে...");
+        } else {
+            alert("অনুগ্রহ করে কাস্টমারের নাম লিখুন।");
+        }
     }
 </script>
 </body>
