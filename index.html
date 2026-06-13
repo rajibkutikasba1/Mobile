@@ -2,64 +2,54 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>Mobile Repair Inventory</title>
+    <title>Mobile Inventory System</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .box { width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; }
-        input, select { width: 95%; margin: 5px 0; padding: 8px; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
-        .print-area { display: none; margin-top: 20px; border: 2px dashed #000; padding: 10px; }
-        @media print { .no-print { display: none; } .print-area { display: block; } }
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 10px; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-<div class="box no-print">
-    <h3>মোবাইল রিপেয়ার এন্ট্রি</h3>
-    <input type="text" id="imei" placeholder="IMEI নাম্বার (স্ক্যান করুন)" onchange="loadData()">
-    <input type="text" id="model" placeholder="মোবাইল মডেল">
+<div class="container">
+    <h3>মোবাইল সার্ভিসিং এন্ট্রি</h3>
+    <input type="text" id="imei" placeholder="IMEI স্ক্যান করুন বা লিখুন" onchange="autoFillModel()">
+    <input type="text" id="model" placeholder="মোবাইলের মডেল">
+    
     <select id="problem">
         <option value="">সমস্যা সিলেক্ট করুন</option>
-        <option value="ডিসপ্লে">ডিসপ্লে সমস্যা</option>
-        <option value="চার্জিং">চার্জিং পোর্ট সমস্যা</option>
-        <option value="ব্যাটারি">ব্যাটারি সমস্যা</option>
-        <option value="সফটওয়্যার">সফটওয়্যার/হ্যাং</option>
+        <option value="Display">ডিসপ্লে সমস্যা (Broken/Blank)</option>
+        <option value="Charging">চার্জিং পোর্ট নষ্ট</option>
+        <option value="Battery">ব্যাটারি ব্যাকআপ কম</option>
+        <option value="Network">নেটওয়ার্ক সমস্যা</option>
+        <option value="Software">সফটওয়্যার/হ্যাং সমস্যা</option>
+        <option value="Camera">ক্যামেরা সমস্যা</option>
+        <option value="Physical">অন্যান্য ফিজিক্যাল ড্যামেজ</option>
     </select>
-    <input type="text" id="customerName" placeholder="কাস্টমারের নাম">
-    <input type="text" id="customerPhone" placeholder="মোবাইল নাম্বার">
-    <input type="number" id="price" placeholder="রিপেয়ার প্রাইস">
-    <button onclick="saveAndPrint()">সেভ ও প্রিন্ট করুন</button>
-</div>
-
-<div id="printSection" class="print-area">
-    <h3>রিসিট: মোবাইল সার্ভিসিং</h3>
-    <p><b>কাস্টমার:</b> <span id="pName"></span></p>
-    <p><b>ফোন:</b> <span id="pPhone"></span></p>
-    <p><b>মডেল:</b> <span id="pModel"></span></p>
-    <p><b>সমস্যা:</b> <span id="pProblem"></span></p>
-    <p><b>প্রাইস:</b> <span id="pPrice"></span> টাকা</p>
-    <p>ধন্যবাদ আমাদের সার্ভিস নেওয়ার জন্য!</p>
+    
+    <input type="text" id="customer" placeholder="কাস্টমারের নাম">
+    <input type="text" id="phone" placeholder="কাস্টমার মোবাইল নাম্বার">
+    <input type="number" id="price" placeholder="রিপেয়ার খরচ">
+    
+    <button onclick="window.print()">সেভ ও প্রিন্ট রিসিট</button>
 </div>
 
 <script>
-    function saveAndPrint() {
-        document.getElementById('pName').innerText = document.getElementById('customerName').value;
-        document.getElementById('pPhone').innerText = document.getElementById('customerPhone').value;
-        document.getElementById('pModel').innerText = document.getElementById('model').value;
-        document.getElementById('pProblem').innerText = document.getElementById('problem').value;
-        document.getElementById('pPrice').innerText = document.getElementById('price').value;
-        
-        // ডাটা ব্রাউজারে সেভ হবে
-        let data = { model: document.getElementById('model').value };
-        localStorage.setItem("imei_" + document.getElementById('imei').value, JSON.stringify(data));
-        
-        window.print();
-    }
+    // অটোমেটিক মডেল ডাটাবেস
+    const phoneData = {
+        "351234567890123": "iPhone 13 Pro",
+        "352345678901234": "Samsung Galaxy S22",
+        "353456789012345": "Xiaomi Redmi Note 11"
+    };
 
-    function loadData() {
+    function autoFillModel() {
         let imei = document.getElementById('imei').value;
-        let d = JSON.parse(localStorage.getItem("imei_" + imei));
-        if(d) document.getElementById('model').value = d.model;
+        if(phoneData[imei]) {
+            document.getElementById('model').value = phoneData[imei];
+        } else {
+            alert("এই মডেলটি ডাটাবেসে নেই, ম্যানুয়ালি লিখুন।");
+        }
     }
 </script>
 
