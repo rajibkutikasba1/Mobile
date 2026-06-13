@@ -2,56 +2,74 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>Mobile Inventory System</title>
+    <title>প্রো সার্ভিসিং ইনভেন্টরি</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        .container { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 10px; }
-        input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #eef2f3; padding: 20px; }
+        .card { max-width: 500px; background: white; margin: auto; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        button:hover { background: #219150; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h3>মোবাইল সার্ভিসিং এন্ট্রি</h3>
-    <input type="text" id="imei" placeholder="IMEI স্ক্যান করুন বা লিখুন" onchange="autoFillModel()">
-    <input type="text" id="model" placeholder="মোবাইলের মডেল">
+<div class="card">
+    <h2>মোবাইল সার্ভিসিং ড্যাশবোর্ড</h2>
     
-    <select id="problem">
-        <option value="">সমস্যা সিলেক্ট করুন</option>
-        <option value="Display">ডিসপ্লে সমস্যা (Broken/Blank)</option>
-        <option value="Charging">চার্জিং পোর্ট নষ্ট</option>
-        <option value="Battery">ব্যাটারি ব্যাকআপ কম</option>
-        <option value="Network">নেটওয়ার্ক সমস্যা</option>
-        <option value="Software">সফটওয়্যার/হ্যাং সমস্যা</option>
-        <option value="Camera">ক্যামেরা সমস্যা</option>
-        <option value="Physical">অন্যান্য ফিজিক্যাল ড্যামেজ</option>
-    </select>
-    
-    <input type="text" id="customer" placeholder="কাস্টমারের নাম">
-    <input type="text" id="phone" placeholder="কাস্টমার মোবাইল নাম্বার">
-    <input type="number" id="price" placeholder="রিপেয়ার খরচ">
-    
-    <button onclick="window.print()">সেভ ও প্রিন্ট রিসিট</button>
+    <div class="form-group">
+        <label>IMEI স্ক্যান করুন</label>
+        <input type="text" id="imei" placeholder="স্ক্যানার দিয়ে স্ক্যান করুন..." onchange="loadMobileData()">
+    </div>
+
+    <div class="form-group">
+        <label>মোবাইল মডেল</label>
+        <input type="text" id="model" readonly placeholder="IMEI দিলে মডেল আসবে...">
+    </div>
+
+    <div class="form-group">
+        <label>সমস্যার ধরন</label>
+        <select id="problem">
+            <option value="">-- সমস্যা নির্বাচন করুন --</option>
+            <option value="Display">ডিসপ্লে/টাচ সমস্যা</option>
+            <option value="Charging">চার্জিং পোর্ট</option>
+            <option value="Battery">ব্যাটারি পরিবর্তন</option>
+            <option value="Network">নেটওয়ার্ক ইস্যু</option>
+            <option value="Dead">ফোন অন হয় না (Dead)</option>
+            <option value="Software">সফটওয়্যার/লক</option>
+            <option value="Camera">ক্যামেরা সমস্যা</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>কাস্টমারের নাম ও মোবাইল</label>
+        <input type="text" id="cName" placeholder="নাম">
+        <input type="text" id="cPhone" placeholder="ফোন নাম্বার">
+    </div>
+
+    <button onclick="window.print()">রিপোর্ট প্রিন্ট করুন</button>
 </div>
 
 <script>
-    // অটোমেটিক মডেল ডাটাবেস
-    const phoneData = {
-        "351234567890123": "iPhone 13 Pro",
-        "352345678901234": "Samsung Galaxy S22",
-        "353456789012345": "Xiaomi Redmi Note 11"
+    // এখানে আপনার দোকানের স্টক ডাটাবেস রাখুন
+    const stock = {
+        "123456789": "iPhone 15 Pro",
+        "987654321": "Samsung S24 Ultra",
+        "555666777": "Redmi Note 13"
     };
 
-    function autoFillModel() {
+    function loadMobileData() {
         let imei = document.getElementById('imei').value;
-        if(phoneData[imei]) {
-            document.getElementById('model').value = phoneData[imei];
+        let modelField = document.getElementById('model');
+        
+        if(stock[imei]) {
+            modelField.value = stock[imei];
         } else {
-            alert("এই মডেলটি ডাটাবেসে নেই, ম্যানুয়ালি লিখুন।");
+            modelField.value = "মডেল খুঁজে পাওয়া যায়নি!";
         }
     }
 </script>
-
 </body>
 </html>
