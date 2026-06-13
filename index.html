@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>মোবাইল কেয়ার কুটি বাজার</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
         body { font-family: 'SolaimanLipi', sans-serif; background: #eee; padding: 20px; }
         .invoice { max-width: 500px; background: white; margin: auto; padding: 25px; border: 2px solid #333; }
@@ -11,7 +12,7 @@
         .field { margin: 10px 0; }
         label { font-weight: bold; display: block; }
         input, select { width: 100%; padding: 10px; border: 1px solid #999; box-sizing: border-box; }
-        .footer { margin-top: 25px; font-size: 12px; border-top: 1px dashed #333; padding-top: 10px; }
+        .barcode-area { text-align: center; margin-top: 20px; }
         button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; cursor: pointer; font-size: 16px; margin-top: 20px; }
         @media print { .no-print { display: none; } }
     </style>
@@ -24,24 +25,18 @@
 
     <div class="no-print">
         <label>IMEI স্ক্যান করুন:</label>
-        <input type="text" id="imei" onchange="autoFill()" placeholder="এখানে স্ক্যান করুন...">
+        <input type="text" id="imei" onchange="generateBarcode()" placeholder="এখানে স্ক্যান করুন...">
     </div>
 
     <div class="field">
         <label>মডেল:</label>
         <input type="text" id="model">
     </div>
-    <div class="field">
-        <label>সমস্যা:</label>
-        <select id="problem">
-            <option>ডিসপ্লে সমস্যা</option>
-            <option>চার্জিং পোর্ট সমস্যা</option>
-            <option>ব্যাটারি পরিবর্তন</option>
-            <option>নেটওয়ার্ক সমস্যা</option>
-            <option>সফটওয়্যার/হ্যাং</option>
-            <option>অন্যান্য</option>
-        </select>
+    
+    <div class="barcode-area">
+        <svg id="barcode"></svg>
     </div>
+
     <div class="field">
         <label>কাস্টমারের নাম:</label>
         <input type="text" id="cName">
@@ -51,16 +46,8 @@
         <input type="text" id="cPhone">
     </div>
     <div class="field">
-        <label>ঠিকানা:</label>
-        <input type="text" id="cAddress">
-    </div>
-    <div class="field">
-        <label>রিপেয়ার খরচ (টাকা):</label>
+        <label>রিপেয়ার খরচ:</label>
         <input type="number" id="price">
-    </div>
-
-    <div class="footer">
-        <p><b>শর্তাবলি:</b> ১. ওয়ারেন্টি মেয়াদ ৭ দিন। ২. পানি লাগলে বা হাত থেকে পড়ে গেলে ওয়ারেন্টি কার্যকর নয়। ৩. রিসিট ছাড়া ফোন ডেলিভারি দেওয়া হবে না।</p>
     </div>
 
     <button class="no-print" onclick="window.print()">রিসিট প্রিন্ট করুন</button>
@@ -69,15 +56,14 @@
 <script>
     document.getElementById('date').innerText = new Date().toLocaleDateString('bn-BD');
 
-    function autoFill() {
-        // এখানে আপনার ফোনের মডেল যোগ করা আছে
-        const phones = { "12345": "Samsung M12", "67890": "Vivo Y20", "11122": "Oppo A15" };
+    function generateBarcode() {
         let imei = document.getElementById('imei').value;
-        if(phones[imei]) {
-            document.getElementById('model').value = phones[imei];
-        } else {
-            alert("মডেল পাওয়া যায়নি, নিজে লিখুন।");
-        }
+        // অটো মডেল লোড
+        const phones = { "12345": "Samsung M12", "67890": "Vivo Y20" };
+        if(phones[imei]) document.getElementById('model').value = phones[imei];
+        
+        // বারকোড জেনারেট
+        JsBarcode("#barcode", imei, { format: "CODE128", width: 2, height: 40, displayValue: true });
     }
 </script>
 </body>
