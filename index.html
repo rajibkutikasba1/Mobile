@@ -5,18 +5,17 @@
     <title>মোবাইল কেয়ার - ইনভেন্টরি</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
-        body { font-family: 'SolaimanLipi', sans-serif; background: #f4f4f4; padding: 15px; }
-        .card { max-width: 500px; background: white; margin: auto; padding: 20px; border: 2px solid #333; border-radius: 12px; }
-        h2 { text-align: center; color: #d35400; margin: 0; }
-        .address { text-align: center; font-size: 14px; margin-bottom: 20px; }
-        .field { margin: 12px 0; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #777; border-radius: 5px; box-sizing: border-box; }
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        button { flex: 1; padding: 12px; cursor: pointer; color: white; border: none; border-radius: 6px; font-weight: bold; }
+        body { font-family: sans-serif; background: #eee; padding: 10px; }
+        .card { max-width: 500px; background: white; margin: auto; padding: 20px; border: 2px solid #333; border-radius: 10px; }
+        h2 { text-align: center; color: #d35400; }
+        .field { margin: 8px 0; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #777; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 5px; margin-top: 15px; }
+        button { flex: 1; padding: 10px; cursor: pointer; color: white; border: none; border-radius: 4px; }
         .save-btn { background: #2980b9; }
         .print-btn { background: #27ae60; }
-        .conditions { font-size: 12px; margin-top: 20px; border-top: 1px dashed #333; padding-top: 10px; }
+        .list-btn { background: #8e44ad; }
+        #dataList { margin-top: 20px; font-size: 13px; border-top: 2px solid #333; padding-top: 10px; }
         @media print { .no-print { display: none; } }
     </style>
 </head>
@@ -24,79 +23,55 @@
 
 <div class="card">
     <h2>📱 মোবাইল কেয়ার</h2>
-    <div class="address">কুটি বাজার, কসবা, বি-বাড়িয়া</div>
+    <div style="text-align:center;">কুটি বাজার, কসবা, বি-বাড়িয়া</div>
 
-    <div class="field">
-        <label>IMEI / বারকোড (রেফারেন্স):</label>
-        <input type="text" id="imei" onchange="findCustomer()" placeholder="স্ক্যান করুন...">
-    </div>
+    <div class="field"><label>IMEI (রেফারেন্স):</label><input type="text" id="imei" onchange="findCustomer()" placeholder="স্ক্যান করুন..."></div>
+    <div class="field"><label>মডেল:</label><input type="text" id="model"></div>
+    <div class="field"><label>কাস্টমারের নাম:</label><input type="text" id="cName"></div>
+    <div class="field"><label>ঠিকানা:</label><input type="text" id="cAddress"></div>
+    <div class="field"><label>মোবাইল:</label><input type="text" id="cPhone"></div>
+    <div class="field"><label>টাকা:</label><input type="number" id="price"></div>
 
-    <div class="field">
-        <label>মোবাইল মডেল:</label>
-        <input type="text" id="model" placeholder="মডেলের নাম লিখুন">
-    </div>
-
-    <div class="field">
-        <label>কাস্টমারের নাম:</label>
-        <input type="text" id="cName" placeholder="নাম">
-    </div>
-    <div class="field">
-        <label>ঠিকানা:</label>
-        <input type="text" id="cAddress" placeholder="ঠিকানা">
-    </div>
-    <div class="field">
-        <label>মোবাইল নাম্বার:</label>
-        <input type="text" id="cPhone" placeholder="মোবাইল নাম্বার">
-    </div>
-    <div class="field">
-        <label>টাকা:</label>
-        <input type="number" id="price" placeholder="টাকার পরিমাণ">
-    </div>
-
-    <div style="text-align:center; margin: 20px 0;"><svg id="barcode"></svg></div>
-
-    <div class="conditions">
-        <b>শর্তাবলি ও গ্যারান্টি:</b><br>
-        ১. আমাদের সার্ভিসিং এর কোনো প্রকার ওয়ারেন্টি বা গ্যারান্টি নেই।<br>
-        ২. ফোন ডেলিভারির সময় ভালোমতো চেক করে নিবেন।<br>
-        ৩. এই রিসিটটি টোকেন হিসেবে সংরক্ষণ করুন।
-    </div>
+    <div style="text-align:center;"><svg id="barcode"></svg></div>
 
     <div class="no-print btn-group">
         <button class="save-btn" onclick="saveData()">সেভ করুন</button>
-        <button class="print-btn" onclick="window.print()">টোকেন প্রিন্ট</button>
+        <button class="print-btn" onclick="window.print()">প্রিন্ট</button>
+        <button class="list-btn" onclick="showList()">সব লিস্ট</button>
     </div>
+
+    <div id="dataList" class="no-print"></div>
 </div>
 
 <script>
     function saveData() {
         let imei = document.getElementById('imei').value;
-        if(!imei) { alert("প্রথমে একটি IMEI নাম্বার দিন!"); return; }
-        
-        let data = {
-            model: document.getElementById('model').value,
-            cName: document.getElementById('cName').value,
-            cAddress: document.getElementById('cAddress').value,
-            cPhone: document.getElementById('cPhone').value,
-            price: document.getElementById('price').value
-        };
+        if(!imei) return alert("IMEI দিন!");
+        let data = { model: document.getElementById('model').value, cName: document.getElementById('cName').value, cAddress: document.getElementById('cAddress').value, cPhone: document.getElementById('cPhone').value, price: document.getElementById('price').value };
         localStorage.setItem(imei, JSON.stringify(data));
-        JsBarcode("#barcode", imei, { format: "CODE128", width: 2, height: 40 });
-        alert("তথ্য সেভ হয়েছে!");
+        alert("সেভ হয়েছে!");
     }
 
     function findCustomer() {
         let imei = document.getElementById('imei').value;
         let saved = JSON.parse(localStorage.getItem(imei));
         if(saved) {
-            document.getElementById('model').value = saved.model || "";
-            document.getElementById('cName').value = saved.cName || "";
-            document.getElementById('cAddress').value = saved.cAddress || "";
-            document.getElementById('cPhone').value = saved.cPhone || "";
-            document.getElementById('price').value = saved.price || "";
+            document.getElementById('model').value = saved.model;
+            document.getElementById('cName').value = saved.cName;
+            document.getElementById('cAddress').value = saved.cAddress;
+            document.getElementById('cPhone').value = saved.cPhone;
+            document.getElementById('price').value = saved.price;
             JsBarcode("#barcode", imei, { format: "CODE128", width: 2, height: 40 });
-        } else {
-            alert("নতুন কাস্টমার! তথ্য পূরণ করুন।");
+        }
+    }
+
+    function showList() {
+        let listDiv = document.getElementById('dataList');
+        listDiv.innerHTML = "<h3>সেভ করা কাস্টমারদের লিস্ট:</h3>";
+        for(let i=0; i < localStorage.length; i++){
+            let key = localStorage.key(i);
+            let val = JSON.parse(localStorage.getItem(key));
+            listDiv.innerHTML += `<p><b>${key}</b>: ${val.cName} (${val.cPhone})</p>`;
         }
     }
 </script>
