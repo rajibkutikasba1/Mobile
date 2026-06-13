@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Inventory System</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .box { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input, select { width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h3>মোবাইল ইনভেন্টরি</h3>
+    <input type="text" id="imei" placeholder="IMEI নাম্বার (স্ক্যান করুন)">
+    <input type="text" id="model" placeholder="মোবাইল মডেল">
+    <select id="problem">
+        <option value="">সমস্যা সিলেক্ট করুন</option>
+        <option value="ডিসপ্লে">ডিসপ্লে সমস্যা</option>
+        <option value="চার্জিং">চার্জিং পোর্ট</option>
+        <option value="ব্যাটারি">ব্যাটারি সমস্যা</option>
+    </select>
+    <input type="text" id="customer" placeholder="কাস্টমারের নাম">
+    <input type="number" id="price" placeholder="রিপেয়ার প্রাইস">
+    <button onclick="window.print()">সেভ ও প্রিন্ট করুন</button>
+</div>
+
+</body>
+</html>
